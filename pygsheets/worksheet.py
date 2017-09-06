@@ -270,7 +270,7 @@ class Worksheet(object):
                 row = []
                 for i in range(len(matrix[k])):
                     if majdim == 'COLUMNS':
-                        row.append(Cell(pos=(start[0]+i, start[1]+k), worksheet=self, cell_data=matrix[k][i]))
+                        row.append(Cell(pos=(start[0]+k, start[1]+i), worksheet=self, cell_data=matrix[k][i]))
                     elif majdim == 'ROWS':
                         row.append(Cell(pos=(start[0]+k, start[1]+i), worksheet=self, cell_data=matrix[k][i]))
                     else:
@@ -346,8 +346,13 @@ class Worksheet(object):
         :param returnas: ('matrix' or 'cell') return as cell objects or just values
 
         """
-        return self.get_values((1, col), (self.rows, col), majdim='COLUMNS',
+        if returnas == "matrix":
+            return self.get_values((1, col), (self.rows, col), majdim='COLUMNS',
                                returnas=returnas, include_empty=include_empty)[0]
+        # cells
+        else:
+            return [cell[0] for cell in self.get_values((1, col), (self.rows, col), majdim='COLUMNS',
+                               returnas=returnas, include_empty=include_empty)]
 
     def update_cell(self, addr, val, parse=True):
         """Sets the new value to a cell.
